@@ -63,7 +63,14 @@
 <!-- ここから上を編集する必要はありません -->
 
 <!-- ここにモックのtable要素を貼り付けます -->
-
+				<br>
+				<form th:action="@{/employee/showListBySearch}">
+					※検索したい名前の一部を入力してください<br>
+					<input type="text" name="ambiguousName">
+					<button>検索</button>
+				</form>
+				<span th:unless="${message} == null" th:text="${message}"></span>
+				<br>
 				<table class="table table-striped">
 					<thead>
 						<tr>
