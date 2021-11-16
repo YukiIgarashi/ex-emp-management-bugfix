@@ -74,17 +74,30 @@ public class AdministratorController {
 	 */
 	@RequestMapping("/insert")
 	public String insert(@Validated InsertAdministratorForm form,BindingResult result,Model model) {
+		
+		//入力チェックでエラーが出ていないか確認
 		if(result.hasErrors()) {
 			
 			return "administrator/insert";
 		}
 		
+		//既に登録されているメールアドレスか確認
 		Administrator administrator2 = administratorService.findByMailAddress(form.getMailAddress()); 
 		if(administrator2 != null) {
 			String message = "このメールアドレスは既に登録されています";
 			model.addAttribute("message",message);
 			return "administrator/insert";
 		} 
+		
+		//パスワードと確認用パスワードが一致しているか確認
+		String password = form.getPassword();
+		String chekPassword = form.getCheckPassword();
+		
+		if(!password.equals(chekPassword)) {
+			String passMessage = "パスワードと確認用パスワードが一致していません" ;
+			model.addAttribute("passMessage",passMessage);
+			return "administrator/insert";
+		}
 		
 		Administrator administrator = new Administrator();
 		// フォームからドメインにプロパティ値をコピー
