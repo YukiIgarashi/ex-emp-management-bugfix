@@ -92,4 +92,33 @@ public class EmployeeController {
 		employeeService.update(employee);
 		return "redirect:/employee/showList";
 	}
+	
+	/////////////////////////////////////////////////////
+	// ユースケース：検索フォームで曖昧検索した従業員一覧を表示する
+	/////////////////////////////////////////////////////
+	/**
+	* 曖昧検索結果の従業員一覧画面を出力します.
+	* 
+	* @param model モデル
+	* @return 曖昧検索結果の従業員一覧画面(検索結果がない場合は全件検索の結果)
+	*/
+	@RequestMapping("/showListBySearch")
+	public String showListBysearch(String ambiguousName,Model model) {
+	
+	List<Employee> employeeList = employeeService.findByAmbiguousName(ambiguousName);
+		
+	if(employeeList == null) {
+		employeeList = employeeService.showList(); 
+		String message = "１件もありませんでした";
+		
+		model.addAttribute("message",message);
+		model.addAttribute("employeeList", employeeList );
+	}
+	
+
+	
+	model.addAttribute("employeeList", employeeList);
+	return "employee/list";
+	}
+	
 }

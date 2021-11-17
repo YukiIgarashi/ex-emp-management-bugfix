@@ -52,9 +52,9 @@ public class EmployeeRepository {
 	public List<Employee> findAll() {
 		String sql = "SELECT id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count FROM employees ORDER BY hire_date DESC";
 
-		List<Employee> developmentList = template.query(sql, EMPLOYEE_ROW_MAPPER);
+		List<Employee> employeeList = template.query(sql, EMPLOYEE_ROW_MAPPER);
 
-		return developmentList;
+		return employeeList;
 	}
 
 	/**
@@ -82,5 +82,25 @@ public class EmployeeRepository {
 
 		String updateSql = "UPDATE employees SET dependents_count=:dependentsCount WHERE id=:id";
 		template.update(updateSql, param);
+	}
+	
+	/**
+	 * @param ambiguousName 従業員一覧画面の検索フォームで入力された曖昧な名前
+	 * @return 曖昧検索の結果の従業員一覧
+	 */
+	public List<Employee> findByAmbiguousName(String ambiguousName) {
+		
+		String sql = "SELECT id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count FROM employees WHERE name LIKE :ambiguousName ORDER BY hire_date DESC";
+
+		SqlParameterSource param = new MapSqlParameterSource().addValue("ambiguousName", '%' + ambiguousName + '%');
+
+		List<Employee> employeeList = template.query(sql,param,EMPLOYEE_ROW_MAPPER);
+		
+		if(employeeList.size() == 0) {
+			return null;
+		}
+
+		return employeeList;
+		
 	}
 }
